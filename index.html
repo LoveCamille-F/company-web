@@ -3,7 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="蓝气球集团以临床研究服务、现场运营网络与数字化系统平台为三大引擎，为中国、亚太及全球医疗创新提供合规、可验证、可规模化的研发交付能力。">
+  <meta name="theme-color" content="#ffffff">
+  <meta property="og:title" content="蓝气球集团 BlueBallon Group">
+  <meta property="og:description" content="临床研究服务 · 现场运营网络 · 数字化系统平台 — 让好的医疗更可及">
+  <meta property="og:type" content="website">
   <title>蓝气球集团 BlueBallon Group</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;850;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #ffffff;
@@ -37,13 +45,11 @@
       line-height: 1.5;
       letter-spacing: 0;
       overflow-x: hidden;
-      cursor: none;
     }
 
     a {
       color: inherit;
       text-decoration: none;
-      cursor: none;
     }
 
     img {
@@ -169,7 +175,24 @@
       pointer-events: none;
     }
 
+    /* FIX: Custom cursor hidden by default, only shown via JS */
     #custom-cursor {
+      display: none;
+    }
+
+    /* FIX: JS adds .cursor-active to body to hide native cursor */
+    body.cursor-active {
+      cursor: none;
+    }
+
+    body.cursor-active a,
+    body.cursor-active button,
+    body.cursor-active .btn {
+      cursor: none;
+    }
+
+    body.cursor-active #custom-cursor {
+      display: block;
       position: fixed;
       left: 50%;
       top: 50%;
@@ -690,13 +713,20 @@
       font-size: 13px;
     }
 
+    /* FIX: reveal animations - content visible by default, hidden only when JS enables animations */
     .reveal {
-      opacity: 0;
-      transform: translateY(18px);
+      opacity: 1;
+      transform: translateY(0);
       transition: opacity .7s ease, transform .7s ease;
     }
 
-    .reveal.show {
+    /* FIX: JS adds .animate class to body to enable reveal animations */
+    body.animate .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+
+    body.animate .reveal.show {
       opacity: 1;
       transform: translateY(0);
     }
@@ -979,7 +1009,7 @@
           <div class="timeline reveal">
             <div class="timeline-item"><div class="year">2018</div><div><h3>临床服务能力成型</h3><p>围绕 CRO 与 SMO 交付搭建项目管理、中心协作与质量体系。</p></div></div>
             <div class="timeline-item"><div class="year">2022</div><div><h3>数字平台进入规模化应用</h3><p>EDC、CTMS、eTMF 等模块开始支撑多业务线协同。</p></div></div>
-            <div class="timeline-item"><div class="year">2026</div><div><h3>集团化品牌与融资叙事升级</h3><p>以“1 + 3”多站点模式建立品牌、业务转化与科技差异化表达。</p></div></div>
+            <div class="timeline-item"><div class="year">2026</div><div><h3>集团化品牌与融资叙事升级</h3><p>以"1 + 3"多站点模式建立品牌、业务转化与科技差异化表达。</p></div></div>
           </div>
         </div>
       </div>
@@ -1069,97 +1099,108 @@
   </footer>
 
   <script>
-    const particleCanvas = document.getElementById('particle-canvas');
-    const particleCtx = particleCanvas.getContext('2d');
-    const customCursor = document.getElementById('custom-cursor');
-    let particleMouseX = window.innerWidth / 2;
-    let particleMouseY = window.innerHeight / 2;
-    let cursorX = particleMouseX;
-    let cursorY = particleMouseY;
-    let particles = [];
+    // FIX: Enable progressive enhancement - only apply animations when JS is ready
+    document.body.classList.add('animate');
 
-    window.addEventListener('mousemove', (event) => {
+    var particleCanvas = document.getElementById('particle-canvas');
+    var particleCtx = particleCanvas.getContext('2d');
+    var customCursor = document.getElementById('custom-cursor');
+    var particleMouseX = window.innerWidth / 2;
+    var particleMouseY = window.innerHeight / 2;
+    var cursorX = particleMouseX;
+    var cursorY = particleMouseY;
+    var particles = [];
+
+    // FIX: Detect touch device - skip custom cursor on mobile
+    var isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+    if (!isTouchDevice) {
+      document.body.classList.add('cursor-active');
+    }
+
+    window.addEventListener('mousemove', function(event) {
       particleMouseX = event.clientX;
       particleMouseY = event.clientY;
     });
 
     function resizeParticleCanvas() {
-      const ratio = window.devicePixelRatio || 1;
+      var ratio = window.devicePixelRatio || 1;
       particleCanvas.width = Math.round(window.innerWidth * ratio);
       particleCanvas.height = Math.round(window.innerHeight * ratio);
-      particleCanvas.style.width = `${window.innerWidth}px`;
-      particleCanvas.style.height = `${window.innerHeight}px`;
+      particleCanvas.style.width = window.innerWidth + 'px';
+      particleCanvas.style.height = window.innerHeight + 'px';
       particleCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
       initParticles();
     }
 
-    class Particle {
-      constructor(width, height) {
-        this.x = Math.random() * width;
-        this.y = Math.random() * height;
-        this.radius = Math.random() * 2 + 1.2;
-        this.color = Math.random() > 0.5 ? 'rgba(0, 221, 179, 0.46)' : 'rgba(0, 122, 255, 0.34)';
-        this.speedX = (Math.random() - 0.5) * 0.46;
-        this.speedY = (Math.random() - 0.5) * 0.42;
-        this.angle = Math.random() * Math.PI * 2;
-      }
-
-      update(width, height) {
-        this.angle += 0.0024;
-        this.x += this.speedX + Math.sin(this.angle) * 0.22;
-        this.y += this.speedY + Math.cos(this.angle) * 0.20;
-
-        const dx = particleMouseX - this.x;
-        const dy = particleMouseY - this.y;
-        const distance = Math.sqrt(dx * dx + dy * dy) || 1;
-        const maxDistance = 142;
-
-        if (distance < maxDistance) {
-          const force = (maxDistance - distance) / maxDistance;
-          this.x -= (dx / distance) * force * 4;
-          this.y -= (dy / distance) * force * 4;
-        }
-
-        if (this.x < -10) this.x = width + 10;
-        if (this.x > width + 10) this.x = -10;
-        if (this.y < -10) this.y = height + 10;
-        if (this.y > height + 10) this.y = -10;
-      }
-
-      draw() {
-        particleCtx.beginPath();
-        particleCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        particleCtx.fillStyle = this.color;
-        particleCtx.fill();
-      }
+    function Particle(width, height) {
+      this.x = Math.random() * width;
+      this.y = Math.random() * height;
+      this.radius = Math.random() * 2 + 1.2;
+      this.color = Math.random() > 0.5 ? 'rgba(0, 221, 179, 0.46)' : 'rgba(0, 122, 255, 0.34)';
+      this.speedX = (Math.random() - 0.5) * 0.46;
+      this.speedY = (Math.random() - 0.5) * 0.42;
+      this.angle = Math.random() * Math.PI * 2;
     }
 
+    Particle.prototype.update = function(width, height) {
+      this.angle += 0.0024;
+      this.x += this.speedX + Math.sin(this.angle) * 0.22;
+      this.y += this.speedY + Math.cos(this.angle) * 0.20;
+
+      var dx = particleMouseX - this.x;
+      var dy = particleMouseY - this.y;
+      var distance = Math.sqrt(dx * dx + dy * dy) || 1;
+      var maxDistance = 142;
+
+      if (distance < maxDistance) {
+        var force = (maxDistance - distance) / maxDistance;
+        this.x -= (dx / distance) * force * 4;
+        this.y -= (dy / distance) * force * 4;
+      }
+
+      if (this.x < -10) this.x = width + 10;
+      if (this.x > width + 10) this.x = -10;
+      if (this.y < -10) this.y = height + 10;
+      if (this.y > height + 10) this.y = -10;
+    };
+
+    Particle.prototype.draw = function() {
+      particleCtx.beginPath();
+      particleCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      particleCtx.fillStyle = this.color;
+      particleCtx.fill();
+    };
+
     function initParticles() {
-      const width = particleCanvas.clientWidth || window.innerWidth;
-      const height = particleCanvas.clientHeight || window.innerHeight;
-      const count = Math.min(135, Math.max(72, Math.floor(width * height / 10500)));
-      particles = Array.from({ length: count }, () => new Particle(width, height));
+      var width = particleCanvas.clientWidth || window.innerWidth;
+      var height = particleCanvas.clientHeight || window.innerHeight;
+      var count = Math.min(135, Math.max(72, Math.floor(width * height / 10500)));
+      particles = [];
+      for (var i = 0; i < count; i++) {
+        particles.push(new Particle(width, height));
+      }
     }
 
     function drawParticleLinks(width, height) {
-      for (let i = 0; i < particles.length; i += 1) {
-        for (let j = i + 1; j < particles.length; j += 1) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+      for (var i = 0; i < particles.length; i += 1) {
+        for (var j = i + 1; j < particles.length; j += 1) {
+          var dx = particles[i].x - particles[j].x;
+          var dy = particles[i].y - particles[j].y;
+          var distance = Math.sqrt(dx * dx + dy * dy);
           if (distance < 118) {
-            const alpha = (1 - distance / 118) * 0.15;
+            var alpha = (1 - distance / 118) * 0.15;
             particleCtx.beginPath();
             particleCtx.moveTo(particles[i].x, particles[i].y);
             particleCtx.lineTo(particles[j].x, particles[j].y);
-            particleCtx.strokeStyle = `rgba(0, 122, 255, ${alpha})`;
+            particleCtx.strokeStyle = 'rgba(0, 122, 255, ' + alpha + ')';
             particleCtx.lineWidth = 1;
             particleCtx.stroke();
           }
         }
       }
 
-      const gradient = particleCtx.createLinearGradient(0, height * 0.18, width, height * 0.74);
+      var gradient = particleCtx.createLinearGradient(0, height * 0.18, width, height * 0.74);
       gradient.addColorStop(0, 'rgba(0, 221, 179, 0.08)');
       gradient.addColorStop(0.48, 'rgba(0, 122, 255, 0.07)');
       gradient.addColorStop(1, 'rgba(0, 221, 179, 0.02)');
@@ -1174,52 +1215,64 @@
     function animateCursor() {
       cursorX += (particleMouseX - cursorX) * 0.16;
       cursorY += (particleMouseY - cursorY) * 0.16;
-      customCursor.style.left = `${cursorX}px`;
-      customCursor.style.top = `${cursorY}px`;
+      customCursor.style.left = cursorX + 'px';
+      customCursor.style.top = cursorY + 'px';
       requestAnimationFrame(animateCursor);
     }
 
     function animateParticles() {
-      const width = particleCanvas.clientWidth;
-      const height = particleCanvas.clientHeight;
+      var width = particleCanvas.clientWidth;
+      var height = particleCanvas.clientHeight;
       particleCtx.clearRect(0, 0, width, height);
       drawParticleLinks(width, height);
-      particles.forEach((particle) => {
-        particle.update(width, height);
-        particle.draw();
-      });
+      for (var i = 0; i < particles.length; i++) {
+        particles[i].update(width, height);
+        particles[i].draw();
+      }
       requestAnimationFrame(animateParticles);
     }
 
     window.addEventListener('resize', resizeParticleCanvas);
     resizeParticleCanvas();
     animateParticles();
-    animateCursor();
 
-    document.querySelectorAll('a, button, .business-card, .btn').forEach((element) => {
-      element.addEventListener('mouseenter', () => customCursor.classList.add('hover'));
-      element.addEventListener('mouseleave', () => customCursor.classList.remove('hover'));
-    });
+    if (!isTouchDevice) {
+      animateCursor();
+    }
 
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
+    if (!isTouchDevice) {
+      document.querySelectorAll('a, button, .business-card, .btn').forEach(function(element) {
+        element.addEventListener('mouseenter', function() { customCursor.classList.add('hover'); });
+        element.addEventListener('mouseleave', function() { customCursor.classList.remove('hover'); });
+      });
+    }
+
+    var revealObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
         if (entry.isIntersecting) entry.target.classList.add('show');
       });
     }, { threshold: 0.12 });
 
-    document.querySelectorAll('.reveal').forEach((el, index) => {
-      el.style.transitionDelay = `${Math.min(index % 5, 4) * 70}ms`;
+    document.querySelectorAll('.reveal').forEach(function(el, index) {
+      el.style.transitionDelay = (Math.min(index % 5, 4) * 70) + 'ms';
       revealObserver.observe(el);
     });
 
-    document.querySelectorAll('.business-card').forEach((card) => {
-      card.addEventListener('mousemove', (event) => {
-        const rect = card.getBoundingClientRect();
-        const x = (event.clientX - rect.left) / rect.width - 0.5;
-        const y = (event.clientY - rect.top) / rect.height - 0.5;
-        card.style.transform = `translateY(-8px) rotateX(${-y * 5}deg) rotateY(${x * 7}deg)`;
+    // FIX: Fallback - show all .reveal elements after 3 seconds even if IntersectionObserver hasn't triggered
+    setTimeout(function() {
+      document.querySelectorAll('.reveal:not(.show)').forEach(function(el) {
+        el.classList.add('show');
       });
-      card.addEventListener('mouseleave', () => {
+    }, 3000);
+
+    document.querySelectorAll('.business-card').forEach(function(card) {
+      card.addEventListener('mousemove', function(event) {
+        var rect = card.getBoundingClientRect();
+        var x = (event.clientX - rect.left) / rect.width - 0.5;
+        var y = (event.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = 'translateY(-8px) rotateX(' + (-y * 5) + 'deg) rotateY(' + (x * 7) + 'deg)';
+      });
+      card.addEventListener('mouseleave', function() {
         card.style.transform = '';
       });
     });
