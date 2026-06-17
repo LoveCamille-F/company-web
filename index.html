@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>蓝气球集团 BlueBallon Group</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --panel: rgba(255, 255, 255, 0.78);
+      --panel-strong: rgba(255, 255, 255, 0.96);
+      --line: rgba(12, 12, 13, 0.08);
+      --text: #0c0c0d;
+      --muted: #777f87;
+      --soft: #555f68;
+      --cyan: #00ddb3;
+      --blue: #007aff;
+      --violet: #8b5cff;
+      --gold: #ffc857;
+      --green: #78d68f;
+      --shadow: 0 22px 58px rgba(24, 39, 75, 0.07);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
+      letter-spacing: 0;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      cursor: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid rgba(12, 12, 13, 0.035);
+      background: rgba(255, 255, 255, 0.76);
+      backdrop-filter: blur(16px);
+    }
+
+    .nav {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 196px;
+    }
+
+    .mark {
+      display: none;
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 16px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .brand span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .navlinks {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      color: #0c0c0d;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .navlinks a {
+      opacity: 0.78;
+    }
+
+    .navlinks a:hover {
+      opacity: 1;
+      color: var(--cyan);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .lang {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      border: 1px solid rgba(12,12,13,.10);
+      border-radius: 999px;
+      padding: 10px 18px;
+      background: rgba(255,255,255,.72);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 14px;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      border-color: rgba(0,122,255,.22);
+      background: #ffffff;
+    }
+
+    .btn.primary {
+      border-color: transparent;
+      color: #ffffff;
+      background: #0c0c0d;
+    }
+
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+    }
+
+    #custom-cursor {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      width: 34px;
+      height: 34px;
+      z-index: 9999;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: width .18s ease, height .18s ease, filter .18s ease;
+      filter: drop-shadow(0 3px 8px rgba(0, 122, 255, 0.18));
+    }
+
+    #custom-cursor.hover {
+      width: 44px;
+      height: 44px;
+      filter: drop-shadow(0 5px 14px rgba(0, 221, 179, 0.30));
+    }
+
+    .hero-media {
+      display: none;
+    }
+
+    .hero-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .92;
+      transform: scale(1.03);
+    }
+
+    main,
+    footer {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero {
+      position: relative;
+      min-height: calc(100vh - 72px);
+      display: grid;
+      align-items: center;
+      overflow: hidden;
+      isolation: isolate;
+      background: transparent;
+    }
+
+    .hero::after {
+      display: none;
+    }
+
+    .hero-inner {
+      padding: 86px 0 56px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+      color: #8a9299;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      display: none;
+    }
+
+    h1 {
+      max-width: 860px;
+      margin: 0 0 24px;
+      font-size: clamp(50px, 8vw, 104px);
+      line-height: 1.03;
+      letter-spacing: 0;
+      font-weight: 850;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero h1 {
+      color: #0c0c0d;
+    }
+
+    .stroke {
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(12,12,13,.48);
+      text-stroke: 1px rgba(12,12,13,.48);
+    }
+
+    .lead {
+      max-width: 680px;
+      margin: 0 auto 34px;
+      color: rgba(12,12,13,.56);
+      font-size: clamp(17px, 2vw, 22px);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 54px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(96px, 1fr));
+      gap: 1px;
+      border: 1px solid rgba(12,12,13,.055);
+      border-radius: 28px;
+      background: rgba(255,255,255,.62);
+      box-shadow: 0 18px 50px rgba(24,39,75,.045);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
+
+    .metric {
+      padding: 20px 18px;
+      background: rgba(255,255,255,.58);
+      min-height: 100px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1;
+      color: #0c0c0d;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 10px;
+      color: #5d6872;
+      font-size: 13px;
+    }
+
+    section {
+      padding: 92px 0;
+      background: transparent;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 440px);
+      gap: 48px;
+      align-items: end;
+      margin-bottom: 36px;
+    }
+
+    .kicker {
+      margin: 0 0 12px;
+      color: var(--cyan);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(32px, 4.6vw, 62px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .section-head p,
+    .section-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .business-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .business-card,
+    .tech-panel,
+    .timeline-item,
+    .contact-panel {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 14px 46px rgba(24, 39, 75, 0.045);
+    }
+
+    .business-card {
+      min-height: 390px;
+      padding: 34px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: transform .25s ease, border-color .25s ease, background .25s ease;
+    }
+
+    .business-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, var(--brand), transparent 42%);
+      opacity: .13;
+      pointer-events: none;
+    }
+
+    .business-card:hover {
+      transform: translateY(-8px);
+      border-color: color-mix(in srgb, var(--brand), white 18%);
+      background: var(--panel-strong);
+    }
+
+    .card-top {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 46px;
+    }
+
+    .brand-tag {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: color-mix(in srgb, var(--brand), white 14%);
+      color: #06110f;
+      font-weight: 900;
+    }
+
+    .domain {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+
+    .business-card h3 {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 8px;
+      font-size: 28px;
+      letter-spacing: 0;
+    }
+
+    .business-card .en {
+      position: relative;
+      z-index: 1;
+      color: #7c858d;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    .business-card p {
+      position: relative;
+      z-index: 1;
+      color: var(--soft);
+      margin: 0 0 22px;
+    }
+
+    .tags {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 20px;
+    }
+
+    .tag {
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 999px;
+      padding: 7px 10px;
+      color: var(--muted);
+      font-size: 12px;
+      background: rgba(255,255,255,.72);
+    }
+
+    .tech {
+      background: transparent;
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .tech-panel {
+      padding: 30px;
+      min-height: 420px;
+    }
+
+    .platform-map {
+      height: 100%;
+      min-height: 420px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      align-items: center;
+      position: relative;
+    }
+
+    .platform-map::before,
+    .platform-map::after {
+      content: "";
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,255,194,.72), rgba(255,200,87,.55), transparent);
+    }
+
+    .platform-map::before {
+      top: 38%;
+    }
+
+    .platform-map::after {
+      bottom: 38%;
+    }
+
+    .module {
+      min-height: 86px;
+      border: 1px solid rgba(12,12,13,.08);
+      border-radius: 16px;
+      padding: 16px;
+      background: rgba(255,255,255,.82);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .module strong {
+      display: block;
+      font-size: 18px;
+    }
+
+    .module span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .tech-list {
+      display: grid;
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .tech-row {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .num {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      background: var(--cyan);
+      font-weight: 900;
+    }
+
+    .tech-row h3 {
+      margin: 0 0 4px;
+      font-size: 19px;
+    }
+
+    .tech-row p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: .85fr 1.15fr;
+      gap: 18px;
+    }
+
+    .values {
+      display: grid;
+      gap: 12px;
+    }
+
+    .value {
+      padding: 22px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.74);
+    }
+
+    .value strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 18px;
+    }
+
+    .value span {
+      color: var(--muted);
+    }
+
+    .timeline {
+      display: grid;
+      gap: 12px;
+    }
+
+    .timeline-item {
+      padding: 22px;
+      display: grid;
+      grid-template-columns: 86px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .year {
+      color: var(--gold);
+      font-weight: 900;
+      font-size: 18px;
+    }
+
+    .timeline-item h3 {
+      margin: 0 0 5px;
+      font-size: 18px;
+    }
+
+    .timeline-item p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .investors {
+      background: transparent;
+    }
+
+    .cta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .contact-panel {
+      padding: 28px;
+      min-height: 250px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .contact-panel h3 {
+      margin: 0 0 12px;
+      font-size: 24px;
+    }
+
+    .contact-panel p {
+      margin: 0 0 24px;
+      color: var(--muted);
+    }
+
+    .contact-panel .btn {
+      margin-top: auto;
+      align-self: flex-start;
+    }
+
+    .partners {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .partner {
+      min-height: 72px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(12,12,13,.07);
+      border-radius: 16px;
+      background: rgba(255,255,255,.70);
+      color: rgba(12,12,13,.48);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    footer {
+      border-top: 1px solid rgba(12,12,13,.07);
+      padding: 38px 0;
+      color: var(--muted);
+      background: rgba(255,255,255,.76);
+      backdrop-filter: blur(10px);
+    }
+
+    .foot {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .foot-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 13px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1020px) {
+      .navlinks {
+        display: none;
+      }
+
+      .metrics {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .business-grid,
+      .cta-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tech-grid,
+      .about-grid,
+      .section-head {
+        grid-template-columns: 1fr;
+      }
+
+      .partners {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 680px) {
+      .wrap {
+        width: min(100% - 28px, 1180px);
+      }
+
+      .nav {
+        min-height: 66px;
+      }
+
+      .brand {
+        min-width: 0;
+      }
+
+      .brand span,
+      .lang {
+        display: none;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .hero-inner {
+        padding: 64px 0 34px;
+      }
+
+      h1 {
+        font-size: clamp(44px, 16vw, 68px);
+      }
+
+      section {
+        padding: 66px 0;
+      }
+
+      .metrics {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .metric {
+        min-height: 94px;
+        padding: 18px 14px;
+      }
+
+      .platform-map {
+        grid-template-columns: 1fr 1fr;
+        min-height: auto;
+      }
+
+      .platform-map::before,
+      .platform-map::after {
+        display: none;
+      }
+
+      .timeline-item {
+        grid-template-columns: 1fr;
+      }
+
+      .partners {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .foot {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particle-canvas" aria-hidden="true"></canvas>
+  <div id="custom-cursor" aria-hidden="true">
+    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 18C10 14 14 6 16 12C18 6 22 14 28 18C21 16 18 15 16 24C14 15 11 16 4 18Z"
+            stroke="url(#albatross-grad)" stroke-width="1.6" stroke-linejoin="round"/>
+      <defs>
+        <linearGradient id="albatross-grad" x1="4" y1="6" x2="28" y2="24" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#00DDB3"/>
+          <stop offset="100%" stop-color="#007AFF"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+  <header class="topbar">
+    <div class="wrap nav">
+      <a class="brand" href="#home" aria-label="蓝气球集团首页">
+        <span class="mark" aria-hidden="true"></span>
+        <span>
+          <strong>蓝气球集团</strong>
+          <span>BlueBallon Group</span>
+        </span>
+      </a>
+      <nav class="navlinks" aria-label="主导航">
+        <a href="#about">关于集团</a>
+        <a href="#business">业务版图</a>
+        <a href="#technology">科技创新</a>
+        <a href="#investors">合作与投资者</a>
+        <a href="#careers">人才发展</a>
+        <a href="#contact">联系我们</a>
+      </nav>
+      <div class="nav-actions">
+        <span class="lang">中 / EN</span>
+        <a class="btn" href="#contact">联系</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="home">
+    <section class="hero" aria-label="蓝气球集团主视觉">
+      <div class="hero-media" aria-hidden="true">
+        <img src="assets/hero-bioflow.png" alt="">
+      </div>
+      <div class="wrap hero-inner">
+        <div class="eyebrow reveal">Tech-enabled CRO / SMO / Clinical Systems</div>
+        <h1 class="reveal">让好的医疗<br><span class="stroke">更可及</span></h1>
+        <p class="lead reveal">蓝气球集团以临床研究服务、现场运营网络与数字化系统平台为三大引擎，为中国、亚太及全球医疗创新提供合规、可验证、可规模化的研发交付能力。</p>
+        <div class="hero-actions reveal">
+          <a class="btn primary" href="#business">查看三大业务</a>
+          <a class="btn" href="#technology">了解科技赋能</a>
+          <a class="btn" href="#contact">商务合作</a>
+        </div>
+        <div class="metrics reveal" aria-label="关键数据">
+          <div class="metric"><strong>1500+</strong><span>累计 / 在研项目</span></div>
+          <div class="metric"><strong>300+</strong><span>合作研究中心</span></div>
+          <div class="metric"><strong>50+</strong><span>覆盖国家 / 城市</span></div>
+          <div class="metric"><strong>200+</strong><span>中国员工</span></div>
+          <div class="metric"><strong>100000+</strong><span>受试者数量</span></div>
+          <div class="metric"><strong>7500+</strong><span>系统平台用户</span></div>
+          <div class="metric"><strong>50%+</strong><span>创新医疗器械占比</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="business">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div>
+            <p class="kicker">Our Businesses</p>
+            <h2>一个集团品牌中枢，三条业务增长路径。</h2>
+          </div>
+          <p>集团站负责品牌、投资者与人才叙事；三个子品牌分别承担 CRO 商务转化、SMO 网络与 CRC 招聘、系统平台 Demo 转化。</p>
+        </div>
+        <div class="business-grid">
+          <a class="business-card reveal" style="--brand: var(--blue)" href="https://www.blueballon.cn/">
+            <div class="card-top">
+              <div class="brand-tag">CRO</div>
+              <div class="domain">www.blueballon.cn</div>
+            </div>
+            <h3>蓝气球医学</h3>
+            <div class="en">BlueBallon Medical</div>
+            <p>覆盖临床运营、项目管理、医学写作、注册法规、药物警戒、数据管理与统计分析，面向药物、器械、IVD 与真实世界研究提供专业 CRO 交付。</p>
+            <div class="tags">
+              <span class="tag">临床运营</span>
+              <span class="tag">医学监察</span>
+              <span class="tag">RWE</span>
+              <span class="tag">肿瘤 / 免疫 / 器械</span>
+            </div>
+          </a>
+          <a class="business-card reveal" style="--brand: var(--green)" href="https://www.clinbridge.cn/">
+            <div class="card-top">
+              <div class="brand-tag">SMO</div>
+              <div class="domain">www.clinbridge.cn</div>
+            </div>
+            <h3>凌畅医学</h3>
+            <div class="en">Clinbridge</div>
+            <p>以覆盖全国的中心协同网络与 CRC 能力为基础，支持现场管理、受试者招募、知情协助、数据录入、中心启动关闭与稽查配合。</p>
+            <div class="tags">
+              <span class="tag">100+ 合作中心</span>
+              <span class="tag">100+ CRC</span>
+              <span class="tag">500+ 项目经验</span>
+              <span class="tag">中心网络</span>
+            </div>
+          </a>
+          <a class="business-card reveal" style="--brand: var(--cyan)" href="https://www.medinc.cn/">
+            <div class="card-top">
+              <div class="brand-tag">SYS</div>
+              <div class="domain">www.medinc.cn</div>
+            </div>
+            <h3>医墨科技</h3>
+            <div class="en">Medinc Technology</div>
+            <p>构建 EDC、CTMS、eTMF、eConsent、RBQM、招募管理、数据看板与 AI 模块，既支撑集团内部 CRO/SMO，也具备对外 SaaS 交付能力。</p>
+            <div class="tags">
+              <span class="tag">EDC / CTMS</span>
+              <span class="tag">eTMF / eConsent</span>
+              <span class="tag">RBQM</span>
+              <span class="tag">AI 医学报告</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="technology" class="tech">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div>
+            <p class="kicker">Technology & Innovation</p>
+            <h2>用数字系统把临床研发结果变得更可预测。</h2>
+          </div>
+          <p>科技创新叙事聚焦可验证成果：流程在线化、数据源头控制、质量风险前移、跨团队协同透明化，避免过度 AI 承诺。</p>
+        </div>
+        <div class="tech-grid">
+          <div class="tech-panel reveal">
+            <div class="platform-map" aria-label="系统平台模块">
+              <div class="module"><strong>EDC</strong><span>电子数据采集</span></div>
+              <div class="module"><strong>CTMS</strong><span>试验管理</span></div>
+              <div class="module"><strong>eTMF</strong><span>主文档管理</span></div>
+              <div class="module"><strong>eConsent</strong><span>电子知情</span></div>
+              <div class="module"><strong>RBQM</strong><span>风险质量管理</span></div>
+              <div class="module"><strong>Dashboards</strong><span>数据分析看板</span></div>
+              <div class="module"><strong>Recruitment</strong><span>招募管理</span></div>
+              <div class="module"><strong>API</strong><span>系统集成</span></div>
+              <div class="module"><strong>AI Modules</strong><span>预算 / 报告撰写</span></div>
+            </div>
+          </div>
+          <div class="tech-panel reveal">
+            <p class="kicker">Tech-enabled Delivery</p>
+            <h2 style="font-size: clamp(28px, 3vw, 42px);">CRO、SMO 与系统平台交叉赋能。</h2>
+            <div class="tech-list">
+              <div class="tech-row">
+                <div class="num">01</div>
+                <div><h3>从方案到中心执行</h3><p>项目计划、中心启动、任务分派与进度风险在统一系统中可见。</p></div>
+              </div>
+              <div class="tech-row">
+                <div class="num">02</div>
+                <div><h3>从现场到数据源头</h3><p>CRC 协作、源文件协同与数据录入形成更稳定的质量闭环。</p></div>
+              </div>
+              <div class="tech-row">
+                <div class="num">03</div>
+                <div><h3>从合规到可审计</h3><p>围绕 GCP、21 CFR Part 11、等保三级、ISO9001 与软件著作权构建可信基础。</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div>
+            <p class="kicker">About BlueBallon</p>
+            <h2>面向医疗创新的集团化临床研发服务生态。</h2>
+          </div>
+          <p>集团官网承载使命、愿景、发展历程、全球布局、管理团队、质量合规与子公司生态，作为对外品牌信任入口。</p>
+        </div>
+        <div class="about-grid">
+          <div class="values reveal">
+            <div class="value"><strong>使命</strong><span>让好的医疗更可及，让临床研发更高效、更可信。</span></div>
+            <div class="value"><strong>愿景</strong><span>成为亚太领先、面向全球的技术驱动型临床研发服务集团。</span></div>
+            <div class="value"><strong>价值观</strong><span>质量先行、结果导向、长期可信、开放协同。</span></div>
+          </div>
+          <div class="timeline reveal">
+            <div class="timeline-item"><div class="year">2018</div><div><h3>临床服务能力成型</h3><p>围绕 CRO 与 SMO 交付搭建项目管理、中心协作与质量体系。</p></div></div>
+            <div class="timeline-item"><div class="year">2022</div><div><h3>数字平台进入规模化应用</h3><p>EDC、CTMS、eTMF 等模块开始支撑多业务线协同。</p></div></div>
+            <div class="timeline-item"><div class="year">2026</div><div><h3>集团化品牌与融资叙事升级</h3><p>以“1 + 3”多站点模式建立品牌、业务转化与科技差异化表达。</p></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="investors" class="investors">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div>
+            <p class="kicker">Partners & Investors</p>
+            <h2>面向合作伙伴与投资者的透明叙事。</h2>
+          </div>
+          <p>在拟上市 / 融资阶段，投资者关系可采用合作与投资者合并栏目，展示公司概况、治理结构、业务亮点、公告新闻与 IR 联系方式。</p>
+        </div>
+        <div class="partners reveal" aria-label="匿名化伙伴 Logo 墙">
+          <div class="partner">Partner A</div>
+          <div class="partner">Partner B</div>
+          <div class="partner">Partner C</div>
+          <div class="partner">Partner D</div>
+          <div class="partner">Partner E</div>
+          <div class="partner">Partner F</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="careers">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div>
+            <p class="kicker">Careers</p>
+            <h2>在临床、现场、技术与职能团队中共同创造结果。</h2>
+          </div>
+          <p>人才发展栏目覆盖文化与价值观、CRO / SMO / 技术 / 职能机会、办公地点与福利、校招社招入口。SMO 子站可作为 CRC 招聘主阵地。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div>
+            <p class="kicker">Contact</p>
+            <h2>联系蓝气球集团。</h2>
+          </div>
+          <p>北京办公室：北京市北京经济技术开发区科创十三街18号院5号楼12层1202<br>电话：010-67862014　邮箱：info@blueballon.cn</p>
+        </div>
+        <div class="cta-grid">
+          <div class="contact-panel reveal">
+            <h3>商务合作</h3>
+            <p>临床研究、现场运营、系统平台或联合解决方案咨询。</p>
+            <a class="btn primary" href="mailto:info@blueballon.cn?subject=商务合作咨询">发送邮件</a>
+          </div>
+          <div class="contact-panel reveal">
+            <h3>合作与投资者</h3>
+            <p>了解公司概况、融资沟通、战略合作与媒体资料。</p>
+            <a class="btn" href="mailto:info@blueballon.cn?subject=合作与投资者咨询">联系 IR</a>
+          </div>
+          <div class="contact-panel reveal">
+            <h3>加入我们</h3>
+            <p>探索 CRO、SMO、系统研发、产品、质量与职能岗位。</p>
+            <a class="btn" href="mailto:info@blueballon.cn?subject=人才发展咨询">投递意向</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap foot">
+      <div>
+        <div class="brand">
+          <span class="mark" aria-hidden="true"></span>
+          <span>
+            <strong>蓝气球集团</strong>
+            <span>BlueBallon Group · www.blueballon.group.cn</span>
+          </span>
+        </div>
+      </div>
+      <div class="foot-links">
+        <a href="#business">三大子品牌</a>
+        <a href="#technology">科技创新</a>
+        <a href="#investors">合作与投资者</a>
+        <a href="#contact">隐私政策</a>
+        <a href="#contact">Cookie 政策</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const particleCanvas = document.getElementById('particle-canvas');
+    const particleCtx = particleCanvas.getContext('2d');
+    const customCursor = document.getElementById('custom-cursor');
+    let particleMouseX = window.innerWidth / 2;
+    let particleMouseY = window.innerHeight / 2;
+    let cursorX = particleMouseX;
+    let cursorY = particleMouseY;
+    let particles = [];
+
+    window.addEventListener('mousemove', (event) => {
+      particleMouseX = event.clientX;
+      particleMouseY = event.clientY;
+    });
+
+    function resizeParticleCanvas() {
+      const ratio = window.devicePixelRatio || 1;
+      particleCanvas.width = Math.round(window.innerWidth * ratio);
+      particleCanvas.height = Math.round(window.innerHeight * ratio);
+      particleCanvas.style.width = `${window.innerWidth}px`;
+      particleCanvas.style.height = `${window.innerHeight}px`;
+      particleCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      initParticles();
+    }
+
+    class Particle {
+      constructor(width, height) {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.radius = Math.random() * 2 + 1.2;
+        this.color = Math.random() > 0.5 ? 'rgba(0, 221, 179, 0.46)' : 'rgba(0, 122, 255, 0.34)';
+        this.speedX = (Math.random() - 0.5) * 0.46;
+        this.speedY = (Math.random() - 0.5) * 0.42;
+        this.angle = Math.random() * Math.PI * 2;
+      }
+
+      update(width, height) {
+        this.angle += 0.0024;
+        this.x += this.speedX + Math.sin(this.angle) * 0.22;
+        this.y += this.speedY + Math.cos(this.angle) * 0.20;
+
+        const dx = particleMouseX - this.x;
+        const dy = particleMouseY - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+        const maxDistance = 142;
+
+        if (distance < maxDistance) {
+          const force = (maxDistance - distance) / maxDistance;
+          this.x -= (dx / distance) * force * 4;
+          this.y -= (dy / distance) * force * 4;
+        }
+
+        if (this.x < -10) this.x = width + 10;
+        if (this.x > width + 10) this.x = -10;
+        if (this.y < -10) this.y = height + 10;
+        if (this.y > height + 10) this.y = -10;
+      }
+
+      draw() {
+        particleCtx.beginPath();
+        particleCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        particleCtx.fillStyle = this.color;
+        particleCtx.fill();
+      }
+    }
+
+    function initParticles() {
+      const width = particleCanvas.clientWidth || window.innerWidth;
+      const height = particleCanvas.clientHeight || window.innerHeight;
+      const count = Math.min(135, Math.max(72, Math.floor(width * height / 10500)));
+      particles = Array.from({ length: count }, () => new Particle(width, height));
+    }
+
+    function drawParticleLinks(width, height) {
+      for (let i = 0; i < particles.length; i += 1) {
+        for (let j = i + 1; j < particles.length; j += 1) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < 118) {
+            const alpha = (1 - distance / 118) * 0.15;
+            particleCtx.beginPath();
+            particleCtx.moveTo(particles[i].x, particles[i].y);
+            particleCtx.lineTo(particles[j].x, particles[j].y);
+            particleCtx.strokeStyle = `rgba(0, 122, 255, ${alpha})`;
+            particleCtx.lineWidth = 1;
+            particleCtx.stroke();
+          }
+        }
+      }
+
+      const gradient = particleCtx.createLinearGradient(0, height * 0.18, width, height * 0.74);
+      gradient.addColorStop(0, 'rgba(0, 221, 179, 0.08)');
+      gradient.addColorStop(0.48, 'rgba(0, 122, 255, 0.07)');
+      gradient.addColorStop(1, 'rgba(0, 221, 179, 0.02)');
+      particleCtx.beginPath();
+      particleCtx.moveTo(width * 0.04, height * 0.55);
+      particleCtx.bezierCurveTo(width * 0.28, height * 0.24, width * 0.52, height * 0.88, width * 0.96, height * 0.34);
+      particleCtx.lineWidth = 72;
+      particleCtx.strokeStyle = gradient;
+      particleCtx.stroke();
+    }
+
+    function animateCursor() {
+      cursorX += (particleMouseX - cursorX) * 0.16;
+      cursorY += (particleMouseY - cursorY) * 0.16;
+      customCursor.style.left = `${cursorX}px`;
+      customCursor.style.top = `${cursorY}px`;
+      requestAnimationFrame(animateCursor);
+    }
+
+    function animateParticles() {
+      const width = particleCanvas.clientWidth;
+      const height = particleCanvas.clientHeight;
+      particleCtx.clearRect(0, 0, width, height);
+      drawParticleLinks(width, height);
+      particles.forEach((particle) => {
+        particle.update(width, height);
+        particle.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+
+    window.addEventListener('resize', resizeParticleCanvas);
+    resizeParticleCanvas();
+    animateParticles();
+    animateCursor();
+
+    document.querySelectorAll('a, button, .business-card, .btn').forEach((element) => {
+      element.addEventListener('mouseenter', () => customCursor.classList.add('hover'));
+      element.addEventListener('mouseleave', () => customCursor.classList.remove('hover'));
+    });
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('show');
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach((el, index) => {
+      el.style.transitionDelay = `${Math.min(index % 5, 4) * 70}ms`;
+      revealObserver.observe(el);
+    });
+
+    document.querySelectorAll('.business-card').forEach((card) => {
+      card.addEventListener('mousemove', (event) => {
+        const rect = card.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width - 0.5;
+        const y = (event.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `translateY(-8px) rotateX(${-y * 5}deg) rotateY(${x * 7}deg)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
+  </script>
+</body>
+</html>
